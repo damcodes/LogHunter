@@ -1,2 +1,19 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, Log Hunter!");
+﻿using LogHunter;
+
+try
+{
+    bool run;
+
+    do 
+    {
+        var app = new ConsoleApp(args.Length == 0);
+        run = app.Run(args);
+    }
+    while (run);
+}
+catch (Exception e)
+{
+    Console.WriteLine($"\n{e.Message}\n");
+}
+
+
