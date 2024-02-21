@@ -70,16 +70,7 @@ namespace LogHunter
             if (Valid) ClearErrors();
         }
 
-        private static T GetValue(string? value)
-        {
-            if (typeof(T) == typeof(DateTime?))
-            {
-                Type t = typeof(T);
-                Type NullableDateTime = Nullable.GetUnderlyingType(t)!;
-                return (T)Convert.ChangeType(DateTime.Parse(value!), NullableDateTime);
-            }
-            return (T)Convert.ChangeType(value!, typeof(T));
-        }
+        private static T GetValue(string? value) => (T)Convert.ChangeType(typeof(T) == typeof(DateTime) ? DateTime.Parse(value!) : value!, typeof(T));
 
         private static bool IsValidDate(string dateTime)
         {

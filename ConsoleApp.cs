@@ -8,8 +8,8 @@ namespace LogHunter
         [
             new Arg<string?>("LogLevel"),
             new Arg<string?>("Callsite"),
-            new Arg<DateTime?>("Start"),
-            new Arg<DateTime?>("End"),
+            new Arg<DateTime>("Start"),
+            new Arg<DateTime>("End"),
             new Arg<string?>("TransactionId"),
             new Arg<string?>("UserId"),
             new Arg<string?>("Message"),
@@ -30,9 +30,9 @@ namespace LogHunter
                         Prompt(currentArg.Prompt);
                         string input = Console.ReadLine() ?? "";
                         currentArg.Validate(input, isInteractiveMode: true);
-                        if (currentArg.Name == "End" && (DateTime?)Args.Where(arg => arg.Name == "Start").Single().Value > (DateTime?)currentArg.Value)
+                        if (currentArg.Name == "End" && (DateTime)Args.Where(arg => arg.Name == "Start").Single().Value > (DateTime)currentArg.Value)
                         {
-                            Arg<DateTime?> startDate = (Arg<DateTime?>)Args.Where(arg => arg.Name == "Start").Single();
+                            Arg<DateTime> startDate = (Arg<DateTime>)Args.Where(arg => arg.Name == "Start").Single();
                             startDate.SetError($"Time range is invalid. Start date '{startDate.Value}' must be before End date '{(DateTime)currentArg.Value}'.");
                             currentArg.SetError($"Time range is invalid. End date '{(DateTime)currentArg.Value}' must be after Start date '{startDate.Value}'");
                         }
