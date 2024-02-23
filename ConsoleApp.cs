@@ -54,7 +54,7 @@ namespace LogHunter
                             arg.Validate(args[i + 1], isInteractiveMode: false);
                         }
                     }
-                    if (Errors.Count > 0) throw new Exception(string.Join('\n', Errors));
+                    if (Errors.Count > 0) throw new Exception(string.Join(Environment.NewLine, Errors));
                     Arg start = Args.Where(arg => arg.Name == "Start").Single();
                     Arg end = Args.Where(arg => arg.Name == "End").Single();
                     if (start.Value > end.Value)
@@ -67,16 +67,23 @@ namespace LogHunter
                         foreach (Arg arg in Args)
                             if (arg.Error is not null)
                                 Errors.Add(arg.Error);
-                        throw new Exception(string.Join('\n', Errors));
+                        throw new Exception(string.Join(Environment.NewLine, Errors));
                     }
                 }
                 PrintInColor("Beginning hunt for logs with the following query filters:", color: ConsoleColor.Yellow);
                 PrintQueryObj(Args);
+
+                var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
+                hunter.HuntLogs();
+
+                PrintInColor($"Captured {hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() > 1 ? "logs" : "log")}", color: ConsoleColor.Green);
                 return _isInteractiveMode && ShouldContinue();
             }
             catch (Exception e)
             {
-                Console.WriteLine($"\n{e.Message}\n");
+                Console.Clear();
+                PrintInColor($"{Environment.NewLine}{e.Message}{Environment.NewLine}", color: ConsoleColor.Red);
+                Thread.Sleep(5000);
                 return _isInteractiveMode;
             }
         }
@@ -89,9 +96,9 @@ namespace LogHunter
 
         private static void PrintQueryObj(IEnumerable<Arg> args)
         {
-            string queryObjStr = "{\n";
+            string queryObjStr = "{" + Environment.NewLine;
             foreach (Arg arg in args)
-                queryObjStr += $"\t{arg.Name}: {arg.Value ?? "NULL"}\n";
+                queryObjStr += $"\t{arg.Name}: {arg.Value ?? "ALL"}{Environment.NewLine}";
             queryObjStr += "}";
             Console.WriteLine(queryObjStr);
         }
@@ -103,6 +110,6 @@ namespace LogHunter
             Console.ForegroundColor = ConsoleColor.White;
         }
 
-        private static void Prompt(string message) => Console.Write($"\n{message}\n\n---> ");
+        private static void Prompt(string message) => Console.Write($"{Environment.NewLine}{message}{Environment.NewLine}{Environment.NewLine}---> ");
     }
 }
