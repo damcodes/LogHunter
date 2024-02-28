@@ -6,7 +6,7 @@ namespace LogHunter
         private readonly bool _isInteractiveMode = isInteractiveMode;
         private IEnumerable<Arg> Args { get; } =
         [
-            new Arg<string?>("LogLevel"),
+            new Arg<IEnumerable<string>>("LogLevel"),
             new Arg<string?>("Callsite"),
             new Arg<DateTime>("Start"),
             new Arg<DateTime>("End"),
@@ -62,7 +62,18 @@ namespace LogHunter
                         start.SetError($"Time range is invalid. Start date '{start.Value}' must be before End date '{end.Value}'.");
                         end.SetError($"Time range is invalid. End date '{end.Value}' must be after Start date '{start.Value}'.");
                     }
-                    if (!Args.All(arg => arg.Valid))
+                    if (start.Value is null)
+                    {
+                        start.Value ??= DateTime.Now.Subtract(new TimeSpan(3, 0, 0, 0));
+                        start.Valid = true;
+                    }
+                    if (end.Value is null)
+                    {
+                        end.Value ??= DateTime.Now;
+                        end.Valid = true;
+                    }
+
+                    if (Args.Any(arg => arg.Error is not null) && !Args.All(arg => arg.Valid))
                     {
                         foreach (Arg arg in Args)
                             if (arg.Error is not null)
@@ -76,7 +87,8 @@ namespace LogHunter
                 var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
                 hunter.HuntLogs();
 
-                PrintInColor($"Captured {hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() > 1 ? "logs" : "log")}", color: ConsoleColor.Green);
+                PrintInColor($"Captured {hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")}", color: ConsoleColor.Green);
+                Thread.Sleep(5000);
                 return _isInteractiveMode && ShouldContinue();
             }
             catch (Exception e)
@@ -98,7 +110,8 @@ namespace LogHunter
         {
             string queryObjStr = "{" + Environment.NewLine;
             foreach (Arg arg in args)
-                queryObjStr += $"\t{arg.Name}: {arg.Value ?? "ALL"}{Environment.NewLine}";
+                if (arg.Value is not null)
+                    queryObjStr += $"\t{arg.Name}: {(arg.Name == "LogLevel" ? string.Join(", ", arg.Value!) : arg.Value)}{Environment.NewLine}";
             queryObjStr += "}";
             Console.WriteLine(queryObjStr);
         }

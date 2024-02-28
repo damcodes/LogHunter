@@ -14,14 +14,14 @@ namespace LogHunter
         {
             DateTime startDate = _query.Where(arg => arg.Name == "Start").Single().Value;
             DateTime endDate = _query.Where(arg => arg.Name == "End").Single().Value; 
-            var logFilesFilteredByDate = CollectFilesInTimeRange(startDate, endDate);////HHHERRRRERERERERE SOMEWHERE
+            var logFilesFilteredByDate = CollectFilesInTimeRange(startDate, endDate);
 
             IEnumerable<Log> logs = ReadAndMapToLogs(files: logFilesFilteredByDate);
             CapturedLogs = logs.Where(log => _query.All(param =>
             {
                 return param.Name switch
                 {
-                    "LogLevel" => log.Level == param.Value,// need to redesign to include ability to filter by multiple log levels
+                    "LogLevel" => ((IEnumerable<string>)param.Value).Contains(log.Level),
                     "Callsite" => log.Callsite == param.Value,
                     "Start" => DateTime.Parse(log.Time) >= param.Value,
                     "End" => DateTime.Parse(log.Time) <= param.Value,
