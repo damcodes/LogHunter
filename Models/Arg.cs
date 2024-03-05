@@ -76,8 +76,6 @@ namespace LogHunter
         }
 
         private static T GetValue(string? value) => (T)Convert.ChangeType(typeof(T) == typeof(DateTime) ? DateTime.Parse(value!) : value!, typeof(T));
-        // private static T GetArrayValue(IEnumerable<string> array) => (T)Convert.ChangeType(array, typeof(T));
-
         private static bool IsValidDate(string dateTime)
         {
             if (dateTime.Length <= 10)
