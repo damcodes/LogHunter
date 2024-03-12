@@ -15,7 +15,7 @@ namespace LogHunter
             new Arg<string?>("Message"),
         ];
         private ICollection<string> Errors { get; } = [];
-        public bool Run(string[] args)
+        public async Task<bool> Run(string[] args)
         {
             try
             {
@@ -38,6 +38,8 @@ namespace LogHunter
                         }
                         Console.Clear();
                     }
+                    PrintInColor("Beginning hunt for logs with the following query filters:", color: ConsoleColor.Yellow);
+                    PrintQueryObj(Args);
                 }
                 else
                 {
@@ -81,28 +83,37 @@ namespace LogHunter
                         throw new Exception(string.Join(Environment.NewLine, Errors));
                     }
                 }
-                PrintInColor("Beginning hunt for logs with the following query filters:", color: ConsoleColor.Yellow);
-                PrintQueryObj(Args);
-
                 var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
                 hunter.HuntLogs();
-
-                PrintInColor($"Captured {hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")}", color: ConsoleColor.Green);
-                Thread.Sleep(5000);
+                if (_isInteractiveMode) PrintInColor($"{hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
+                if (hunter.CapturedLogs.Any())
+                {
+                    PrintInColor("Prepping logs...", ConsoleColor.Yellow);
+                    var fileGenerator = new TextFileGenerator(hunter.CapturedLogs);
+                    fileGenerator.GroupAndFormat();
+                    await fileGenerator.Dump();
+                    PrintInColor("The hunt was a", ConsoleColor.White, newLine: false);
+                    PrintInColor("success!", ConsoleColor.Green, newLine: false);
+                    PrintInColor("Go to", ConsoleColor.White, newLine: false);
+                    PrintInColor(fileGenerator.HuntPath!, ConsoleColor.Blue, newLine: false);
+                    PrintInColor("to see the spoils.", ConsoleColor.White, newLine: false);
+                }
+                if (_isInteractiveMode) Thread.Sleep(5000);
                 return _isInteractiveMode && ShouldContinue();
             }
             catch (Exception e)
             {
                 Console.Clear();
                 PrintInColor($"{Environment.NewLine}{e.Message}{Environment.NewLine}", color: ConsoleColor.Red);
-                Thread.Sleep(5000);
+                if (_isInteractiveMode) Thread.Sleep(5000);
                 return _isInteractiveMode;
             }
         }
 
         private static bool ShouldContinue()
         {
-            Console.WriteLine("Another hunt? (y/n)");
+            Console.WriteLine(Environment.NewLine);
+            PrintInColor("Another hunt? (y/n)", ConsoleColor.Yellow);
             return Console.ReadLine()?.Trim().ToLower() == "y";
         }
 
@@ -116,10 +127,13 @@ namespace LogHunter
             Console.WriteLine(queryObjStr);
         }
 
-        private static void PrintInColor(string message, ConsoleColor color)
+        private static void PrintInColor(string message, ConsoleColor color, bool newLine = true)
         {
             Console.ForegroundColor = color;
-            Console.WriteLine(message);
+            if (newLine)
+                Console.WriteLine(message);
+            else
+                Console.Write(message + ' ');
             Console.ForegroundColor = ConsoleColor.White;
         }
 

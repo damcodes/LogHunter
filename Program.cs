@@ -7,7 +7,7 @@ try
     do 
     {
         var app = new ConsoleApp(args.Length == 0);
-        run = app.Run(args);
+        run = await app.Run(args);
     }
     while (run);
 }

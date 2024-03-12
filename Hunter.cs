@@ -36,11 +36,12 @@ namespace LogHunter
         private static IEnumerable<string> CollectFilesInTimeRange(DateTime start, DateTime end)
         {
             var logFiles = Directory.EnumerateFiles(_logDirectory);
+            bool inTimeRange;
             return logFiles.Where(fileNameWithPath =>
             {
                 var fileNameNoExtension = Path.GetFileNameWithoutExtension(fileNameWithPath);
                 var fileNameSplit = fileNameNoExtension.Split('-');
-                bool inTimeRange = false;
+                inTimeRange = false;
                 if (int.TryParse(fileNameSplit[2], out int year) && int.TryParse(fileNameSplit[3], out int month) && int.TryParse(fileNameSplit[4], out int day))
                 {
                     var fileDate = new DateTime(year, month, day);
