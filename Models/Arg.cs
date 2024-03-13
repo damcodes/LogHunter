@@ -61,7 +61,7 @@ namespace LogHunter
                     else Value = value.Length == 0 ? GetValue(null)! : GetValue(value)!;
                     break;
                 case "UserId":
-                    Valid = value.Length == 0 || Regex.IsMatch(value, guidPatten);
+                    Valid = true;
                     if (!Valid) Error = $"'{value}' is not a valid GUID value for UserId.";
                     else Value = value.Length == 0 ? GetValue(null)! : GetValue(value)!;
                     break;
