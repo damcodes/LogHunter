@@ -85,9 +85,9 @@ namespace LogHunter
                 }
                 var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
                 hunter.HuntLogs();
-                if (_isInteractiveMode) PrintInColor($"{hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
                 if (hunter.CapturedLogs.Any())
                 {
+                    PrintInColor($"{hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
                     PrintInColor("Prepping logs...", ConsoleColor.Yellow);
                     var fileGenerator = new TextFileGenerator(hunter.CapturedLogs);
                     fileGenerator.GroupAndFormat();
@@ -98,6 +98,8 @@ namespace LogHunter
                     PrintInColor(fileGenerator.HuntPath!, ConsoleColor.Blue, newLine: false);
                     PrintInColor("to see the spoils.", ConsoleColor.White, newLine: false);
                 }
+                else Console.WriteLine("No logs were found that satisfy the parameters.");
+
                 if (_isInteractiveMode) Thread.Sleep(5000);
                 return _isInteractiveMode && ShouldContinue();
             }
