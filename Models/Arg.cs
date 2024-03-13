@@ -81,25 +81,43 @@ namespace LogHunter
             if (dateTime.Length <= 10)
             {
                 string mmddYYYY = @"(\d{2})\/(\d{2})\/(\d{4})";
+                string mmddYYYYDashes = @"(\d{2})-(\d{2})-(\d{4})";
                 string mmdYYYY = @"(\d{2})\/(\d{1})\/(\d{4})";
+                string mmdYYYYDashes = @"(\d{2})-(\d{1})-(\d{4})";
                 string mddYYYY = @"(\d{1})\/(\d{2})\/(\d{4})";
+                string mddYYYYDashes = @"(\d{1})-(\d{2})-(\d{4})";
                 string mdYYYY = @"(\d{1})\/(\d{1})\/(\d{4})";
-                return new string[] { mmddYYYY, mmdYYYY, mddYYYY, mdYYYY }.Any(pattern => Regex.IsMatch(dateTime, pattern));
+                string mdYYYYDashes = @"(\d{1})-(\d{1})-(\d{4})";
+                return new string[] { mmddYYYY, mmdYYYY, mddYYYY, mdYYYY, mmddYYYYDashes, mmdYYYYDashes, mddYYYYDashes, mdYYYYDashes }.Any(pattern => Regex.IsMatch(dateTime, pattern));
             }
             if (dateTime.Length > 10)
             {
                 string mmddYYYYTHHMMss = @"(\d{2})\/(\d{2})\/(\d{4})T(\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mmddYYYYTHHMMssDashes = @"(\d{2})-(\d{2})-(\d{4})T(\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mmddYYYYHHMMss = @"(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mmddYYYYHHMMssDashes = @"(\d{2})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mmdYYYYHHMMss = @"(\d{2})\/(\d{1})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mmdYYYYHHMMssDashes = @"(\d{2})-(\d{1})-(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mdYYYYHHMMss = @"(\d{1})\/(\d{1})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mdYYYYHHMMssDashes = @"(\d{1})-(\d{1})-(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mddYYYYHHMMss = @"(\d{1})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mddYYYYHHMMssDashes = @"(\d{1})-(\d{2})-(\d{4}) (\d{2}):(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mmdYYYYHHMM = @"(\d{2})\/(\d{1})\/(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mmdYYYYHHMMDashes = @"(\d{2})-(\d{1})-(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mdYYYYHHMM = @"(\d{1})\/(\d{1})\/(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mdYYYYHHMMDashes = @"(\d{1})-(\d{1})-(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mddYYYYHHMM = @"(\d{1})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mddYYYYHHMMDashes = @"(\d{1})-(\d{2})-(\d{4}) (\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mmdYYYYTHHMM = @"(\d{2})\/(\d{1})\/(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mmdYYYYTHHMMDashes = @"(\d{2})-(\d{1})-(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mddYYYYTHHMM = @"(\d{1})\/(\d{2})\/(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
+                string mddYYYYTHHMMDashes = @"(\d{1})-(\d{2})-(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
                 string mdYYYYTHHMM = @"(\d{1})\/(\d{1})\/(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
-                return new string[] { mmddYYYYTHHMMss, mmddYYYYHHMMss, mmdYYYYHHMMss, mdYYYYHHMMss, mddYYYYHHMMss, mmdYYYYHHMM, mdYYYYHHMM, mddYYYYHHMM, mmdYYYYTHHMM, mddYYYYTHHMM, mdYYYYTHHMM }.Any(pattern => Regex.IsMatch(dateTime, pattern));
+                string mdYYYYTHHMMDashes = @"(\d{1})-(\d{1})-(\d{4})T(\d{2}):(\d{2})( [AaPp][Mm])?";
+                return new string[] 
+                    { mmddYYYYTHHMMss, mmddYYYYHHMMss, mmdYYYYHHMMss, mdYYYYHHMMss, mddYYYYHHMMss, mmdYYYYHHMM, mdYYYYHHMM, mddYYYYHHMM, 
+                        mmdYYYYTHHMM, mddYYYYTHHMM, mdYYYYTHHMM,mmddYYYYTHHMMssDashes, mmddYYYYHHMMssDashes, mmdYYYYHHMMssDashes, mdYYYYHHMMssDashes, 
+                        mddYYYYHHMMssDashes, mmdYYYYHHMMDashes, mdYYYYHHMMDashes, mddYYYYHHMMDashes, mmdYYYYTHHMMDashes, mddYYYYTHHMMDashes, mdYYYYTHHMMDashes }.Any(pattern => Regex.IsMatch(dateTime, pattern));
             }
             return false;
         }
