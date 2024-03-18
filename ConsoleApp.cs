@@ -56,7 +56,7 @@ namespace LogHunter
                             arg.Validate(args[i + 1], isInteractiveMode: false);
                         }
                     }
-                    if (Errors.Count > 0) throw new Exception(string.Join(Environment.NewLine, Errors));
+                    if (Errors.Count > 0) throw new System.Exception(string.Join(Environment.NewLine, Errors));
                     Arg start = Args.Where(arg => arg.Name == "Start").Single();
                     Arg end = Args.Where(arg => arg.Name == "End").Single();
                     if (start.Value > end.Value)
@@ -80,7 +80,7 @@ namespace LogHunter
                         foreach (Arg arg in Args)
                             if (arg.Error is not null)
                                 Errors.Add(arg.Error);
-                        throw new Exception(string.Join(Environment.NewLine, Errors));
+                        throw new System.Exception(string.Join(Environment.NewLine, Errors));
                     }
                 }
                 var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
@@ -103,7 +103,7 @@ namespace LogHunter
                 if (_isInteractiveMode) Thread.Sleep(5000);
                 return _isInteractiveMode && ShouldContinue();
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Console.Clear();
                 PrintInColor($"{Environment.NewLine}{e.Message}{Environment.NewLine}", color: ConsoleColor.Red);
