@@ -59,9 +59,6 @@ End Date will default to right now if you don't provide a value.
 
 If you enter date and time with a space (i.e "02/27/2024 12:15:00"), you need to enclose the value in quotes:
 ```<path_to_executable>/LogHunter.exe -s "02/27/2024 12:15:00"```  
-Alternatively, you can use this format, separating the date and time with a T:  
-```<path_to_executable>/LogHunter.exe -s 2/27/2024T12:15:00```  
-
 #### LogLevel
 Input log level(s) as a comma separated list of levels with no spaces. This is case insensitive.  
 ```<path_to_executable>/LogHunter.exe -l info,warn,critical```
