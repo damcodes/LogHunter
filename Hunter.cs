@@ -3,10 +3,10 @@ using System.Text.Json;
 
 namespace LogHunter
 {
-    public class Hunter(IEnumerable<Arg> args)
+    public class Hunter(IEnumerable<Arg> args, string logDirectory)
     {
-        private static readonly string _logDirectory = @"C:\TEMP\plutus-logs";
         private readonly static JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
+        private readonly string _logDirectory = logDirectory;
         private readonly IEnumerable<Arg> _query = args;
         public IEnumerable<Log> CapturedLogs { get; set; } = [];
 
@@ -33,7 +33,7 @@ namespace LogHunter
             }));
         }
 
-        private static IEnumerable<string> CollectFilesInTimeRange(DateTime start, DateTime end)
+        private IEnumerable<string> CollectFilesInTimeRange(DateTime start, DateTime end)
         {
             var logFiles = Directory.EnumerateFiles(_logDirectory);
             bool inTimeRange;

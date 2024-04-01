@@ -1,9 +1,12 @@
 
+using Microsoft.Extensions.Configuration;
+
 namespace LogHunter
 {
-    public class ConsoleApp(bool isInteractiveMode)
+    public class ConsoleApp(bool isInteractiveMode, IConfiguration configuration)
     {
         private readonly bool _isInteractiveMode = isInteractiveMode;
+        private readonly IConfiguration _config = configuration;
         private IEnumerable<Arg> Args { get; } =
         [
             new Arg<IEnumerable<string>>("LogLevel"),
@@ -83,7 +86,8 @@ namespace LogHunter
                         throw new System.Exception(string.Join(Environment.NewLine, Errors));
                     }
                 }
-                var hunter = new Hunter(Args.Where(arg => arg.Value is not null));
+                string logDirectory = _config["LogDirectory"] ?? throw new KeyNotFoundException("File path to log directory not found");
+                var hunter = new Hunter(Args.Where(arg => arg.Value is not null), logDirectory);
                 hunter.HuntLogs();
                 if (hunter.CapturedLogs.Any())
                 {
