@@ -9,6 +9,7 @@ namespace LogHunter
         private readonly IConfiguration _config = configuration;
         private IEnumerable<Arg> Args { get; } =
         [
+            new Arg<IEnumerable<string>>("Apps"),
             new Arg<IEnumerable<string>>("LogLevel"),
             new Arg<string?>("Callsite"),
             new Arg<DateTime>("Start"),
@@ -128,7 +129,7 @@ namespace LogHunter
             string queryObjStr = "{" + Environment.NewLine;
             foreach (Arg arg in args)
                 if (arg.Value is not null)
-                    queryObjStr += $"\t{arg.Name}: {(arg.Name == "LogLevel" ? string.Join(", ", arg.Value!) : arg.Value)}{Environment.NewLine}";
+                    queryObjStr += $"\t{arg.Name}: {(arg.Name == "LogLevel" || arg.Name == "Apps" ? string.Join(", ", arg.Value!) : arg.Value)}{Environment.NewLine}";
             queryObjStr += "}";
             Console.WriteLine(queryObjStr);
         }

@@ -12,10 +12,36 @@ namespace LogHunter
             string guidPatten = @"[({]?[a-fA-F0-9]{8}[-]?([a-fA-F0-9]{4}[-]?){3}[a-fA-F0-9]{12}[})]?";
             switch (Name)
             {
+                case "Apps":
+                    IEnumerable<string> appSelectionStrings = value.Split(',').Select(str => str.Trim()).Where(str => str.Length > 0);
+                    List<string> apps = [];
+                    foreach (string input in appSelectionStrings)
+                    {
+                        if (isInteractiveMode)
+                        {
+                            bool isDigit = Regex.IsMatch(input, numeralPattern);
+                            int index = isDigit ? int.Parse(input) - 1 : -1;
+                            bool inRange = index >= 0 && index < Apps.AllApps.Length;
+                            if (!isDigit)
+                                Error = $"Selection '{input}' is invalid. Must be a numeric value.";
+                            else if (!inRange)
+                                Error = Error is null ? $"Selection '{input}' is invalid. Select only from the menu provided." : Error + Environment.NewLine + $"Selection '{input}' is invalid. Select only from the menu provided.";
+                            else apps.Add(Apps.AllApps[index]);
+                        }
+                        else 
+                        {
+                            if (!Apps.AllApps.Contains(input.ToUpper()))
+                                Error = Error is null ? $"Selection '{input}' is not a valid app." : Error + Environment.NewLine + $"Selection '{input}' is not a valid app.";
+                            else apps.Add(input); 
+                        }
+                    }
+                    Valid = Error is null;
+                    if (Valid) Value = apps.Count > 0 ? apps : Apps.AllApps;
+                    break;
                 case "LogLevel":
-                    IEnumerable<string> selectionStrings = value.Split(',').Select(str => str.Trim()).Where(str => str.Length > 0);
+                    IEnumerable<string> logLevelSelectionStrings = value.Split(',').Select(str => str.Trim()).Where(str => str.Length > 0);
                     List<string> levels = [];
-                    foreach (string input in selectionStrings)
+                    foreach (string input in logLevelSelectionStrings)
                     {
                         if (isInteractiveMode)
                         {
@@ -132,7 +158,8 @@ namespace LogHunter
             {
                 return Name switch
                 {
-                    "LogLevel" => $"Select Log Levels:{Environment.NewLine}-----------------{Environment.NewLine}{LogLevels.ToString()}{Environment.NewLine}{Environment.NewLine}Provided comma separated values or hit enter to omit LogLevel filtering.",
+                    "Apps" => $"Select Apps:{Environment.NewLine}-----------------{Environment.NewLine}{Apps.ToString()}{Environment.NewLine}{Environment.NewLine}Provide comma separated values or hit enter to omit Apps filtering",
+                    "LogLevel" => $"Select Log Levels:{Environment.NewLine}-----------------{Environment.NewLine}{LogLevels.ToString()}{Environment.NewLine}{Environment.NewLine}Provide comma separated values or hit enter to omit LogLevel filtering.",
                     "Callsite" => $"Callsite?{Environment.NewLine}Hit enter to omit Callsite filtering.",
                     "Start" => $"Start date? (m-d-YYYY [HH:mm:SS [AM/PM]]){Environment.NewLine}Hit enter to default to 3 days ago.",
                     "End" => $"End date? (m-d-YYYY [HH:mm:SS [AM/PM]]){Environment.NewLine}Hit enter to default to right now.",

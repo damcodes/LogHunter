@@ -1,17 +1,16 @@
 ﻿using LogHunter;
 using Microsoft.Extensions.Configuration;
 
-var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-IConfiguration config = new ConfigurationBuilder()
-    .SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
-    .Build();
-
 try
 {
-    bool run;
+    var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+    IConfiguration config = new ConfigurationBuilder()
+        .SetBasePath(Directory.GetCurrentDirectory())
+        .AddJsonFile($"appsettings.{environment}.json", optional: false, reloadOnChange: true)
+        .Build();
 
-    do 
+    bool run;
+    do
     {
         var app = new ConsoleApp(isInteractiveMode: args.Length == 0, configuration: config);
         run = await app.Run(args);
@@ -22,5 +21,3 @@ catch (System.Exception e)
 {
     Console.WriteLine($"\n{e.Message}\n");
 }
-
-
