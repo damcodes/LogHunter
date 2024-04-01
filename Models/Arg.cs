@@ -30,7 +30,7 @@ namespace LogHunter
                         }
                         else 
                         {
-                            if (!Apps.AllApps.Contains(input.ToUpper()))
+                            if (!Apps.AllApps.Contains(input, StringComparer.OrdinalIgnoreCase))
                                 Error = Error is null ? $"Selection '{input}' is not a valid app." : Error + Environment.NewLine + $"Selection '{input}' is not a valid app.";
                             else apps.Add(input); 
                         }
