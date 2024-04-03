@@ -94,7 +94,7 @@ namespace LogHunter
                 {
                     PrintInColor($"{hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
                     PrintInColor("Prepping logs...", ConsoleColor.Yellow);
-                    var fileGenerator = new TextFileGenerator(hunter.CapturedLogs);
+                    var fileGenerator = new TextFileGenerator(hunter.CapturedLogs); //this will change in next commit to handle changes from Hunter.cs
                     fileGenerator.GroupAndFormat();
                     await fileGenerator.Dump();
                     PrintInColor("The hunt was a", ConsoleColor.White, newLine: false);
