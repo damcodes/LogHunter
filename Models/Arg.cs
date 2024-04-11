@@ -14,29 +14,30 @@ namespace LogHunter
             {
                 case "Apps":
                     IEnumerable<string> appSelectionStrings = value.Split(',').Select(str => str.Trim()).Where(str => str.Length > 0);
-                    List<string> apps = [];
+                    List<App> apps = [];
                     foreach (string input in appSelectionStrings)
                     {
                         if (isInteractiveMode)
                         {
                             bool isDigit = Regex.IsMatch(input, numeralPattern);
                             int index = isDigit ? int.Parse(input) - 1 : -1;
-                            bool inRange = index >= 0 && index < Apps.AllApps.Length;
+                            bool inRange = index >= 0 && index < App.AllApps.Length;
                             if (!isDigit)
                                 Error = $"Selection '{input}' is invalid. Must be a numeric value.";
                             else if (!inRange)
                                 Error = Error is null ? $"Selection '{input}' is invalid. Select only from the menu provided." : Error + Environment.NewLine + $"Selection '{input}' is invalid. Select only from the menu provided.";
-                            else apps.Add(Apps.AllApps[index]);
+                            else apps.Add(App.AllApps[index]);
                         }
                         else 
                         {
-                            if (!Apps.AllApps.Contains(input, StringComparer.OrdinalIgnoreCase))
+                            App? app = App.AllApps.Where(app => app.Name == input).SingleOrDefault();
+                            if (app is null)
                                 Error = Error is null ? $"Selection '{input}' is not a valid app." : Error + Environment.NewLine + $"Selection '{input}' is not a valid app.";
-                            else apps.Add(input); 
+                            else apps.Add(app); 
                         }
                     }
                     Valid = Error is null;
-                    if (Valid) Value = apps.Count > 0 ? apps : Apps.AllApps;
+                    if (Valid && apps.Count > 0) Value = apps;
                     break;
                 case "LogLevel":
                     IEnumerable<string> logLevelSelectionStrings = value.Split(',').Select(str => str.Trim()).Where(str => str.Length > 0);
@@ -62,7 +63,7 @@ namespace LogHunter
                         }
                     }
                     Valid = Error is null;
-                    if (Valid) Value = levels.Count > 0 ? levels : LogLevels.Levels;
+                    if (Valid && levels.Count > 0) Value = levels;
                     break;
                 case "Callsite":
                     Valid = value.Length == 0 || value.Length > 3;
@@ -158,7 +159,7 @@ namespace LogHunter
             {
                 return Name switch
                 {
-                    "Apps" => $"Select Apps:{Environment.NewLine}-----------------{Environment.NewLine}{Apps.ToString()}{Environment.NewLine}{Environment.NewLine}Provide comma separated values or hit enter to omit Apps filtering",
+                    "Apps" => $"Select Apps:{Environment.NewLine}-----------------{Environment.NewLine}{App.ToString()}{Environment.NewLine}{Environment.NewLine}Provide comma separated values or hit enter to omit Apps filtering",
                     "LogLevel" => $"Select Log Levels:{Environment.NewLine}-----------------{Environment.NewLine}{LogLevels.ToString()}{Environment.NewLine}{Environment.NewLine}Provide comma separated values or hit enter to omit LogLevel filtering.",
                     "Callsite" => $"Callsite?{Environment.NewLine}Hit enter to omit Callsite filtering.",
                     "Start" => $"Start date? (m-d-YYYY [HH:mm:SS [AM/PM]]){Environment.NewLine}Hit enter to default to 3 days ago.",

@@ -63,6 +63,9 @@ namespace LogHunter
                     if (Errors.Count > 0) throw new System.Exception(string.Join(Environment.NewLine, Errors));
                     Arg start = Args.Where(arg => arg.Name == "Start").Single();
                     Arg end = Args.Where(arg => arg.Name == "End").Single();
+                    Arg apps = Args.Where(arg => arg.Name == "Apps").Single();
+                    if (!apps.Valid) 
+                        apps.Validate("", _isInteractiveMode);
                     if (start.Value > end.Value)
                     {
                         start.SetError($"Time range is invalid. Start date '{start.Value}' must be before End date '{end.Value}'.");
@@ -90,11 +93,11 @@ namespace LogHunter
                 string logDirectory = _config["LogDirectory"] ?? throw new KeyNotFoundException("File path to log directory not found");
                 var hunter = new Hunter(Args.Where(arg => arg.Value is not null), logDirectory);
                 hunter.HuntLogs();
-                if (hunter.CapturedLogs.Any())
+                if (hunter.LogCount > 0)
                 {
-                    PrintInColor($"{hunter.CapturedLogs.Count()} {(hunter.CapturedLogs.Count() == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
+                    PrintInColor($"{hunter.LogCount} {(hunter.LogCount == 1 ? "log" : "logs")} captured!", color: ConsoleColor.Green);
                     PrintInColor("Prepping logs...", ConsoleColor.Yellow);
-                    var fileGenerator = new TextFileGenerator(hunter.CapturedLogs); //this will change in next commit to handle changes from Hunter.cs
+                    var fileGenerator = new TextFileGenerator(hunter.CapturedLogs);
                     fileGenerator.GroupAndFormat();
                     await fileGenerator.Dump();
                     PrintInColor("The hunt was a", ConsoleColor.White, newLine: false);

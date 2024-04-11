@@ -7,17 +7,18 @@ namespace LogHunter
     {
         private readonly static JsonSerializerOptions _jsonSerializerOptions = new() { PropertyNameCaseInsensitive = true };
         private readonly string _logDirectory = logDirectory;
-        private readonly IEnumerable<Arg> _query = args;
+        private IEnumerable<Arg> _query = args;
         public Dictionary<string, IEnumerable<Log>> CapturedLogs { get; private set; } = [];
+        public int LogCount { get; private set; } = 0;
 
         public void HuntLogs()
         {
             DateTime startDate = _query.Where(arg => arg.Name == "Start").Single().Value;
             DateTime endDate = _query.Where(arg => arg.Name == "End").Single().Value;
-            IEnumerable<string> apps = _query.Where(arg => arg.Name == "Apps").Single().Value;
-            var logFilesFilteredByDate = CollectFilesInTimeRangeByApp(startDate, endDate, apps);
+            IEnumerable<App> apps = _query.Where(arg => arg.Name == "Apps").SingleOrDefault()?.Value ?? App.AllApps;
+            var logFileNamesByApp = CollectFilesInTimeRangeByApp(startDate, endDate, apps);
 
-            foreach (KeyValuePair<string, IEnumerable<string>> item in logFilesFilteredByDate)
+            foreach (KeyValuePair<string, IEnumerable<string>> item in logFileNamesByApp)
             {
                 string appName = item.Key;
                 IEnumerable<string> logFilePaths = item.Value;
@@ -35,18 +36,24 @@ namespace LogHunter
                         _ => false,
                     };
                 }));
-                CapturedLogs.Add(appName, logObjects);
+                int logCount = logObjects.Count();
+                if (logCount > 0) 
+                {
+                    CapturedLogs.Add(appName, logObjects);
+                    LogCount += logCount;
+                }
             }
         }
 
-        private Dictionary<string, IEnumerable<string>> CollectFilesInTimeRangeByApp(DateTime start, DateTime end, IEnumerable<string> apps)
+        private Dictionary<string, IEnumerable<string>> CollectFilesInTimeRangeByApp(DateTime start, DateTime end, IEnumerable<App> apps)
         {
             IEnumerable<string> logFileNames = [];
             Dictionary<string, IEnumerable<string>> logFileNamesByApp = [];
             bool inTimeRange;
-            foreach (string appName in apps)
+            foreach (App app in apps)
             {
-                IEnumerable<string> appLogFileNames = Directory.EnumerateFiles($@"{_logDirectory}\{appName}").Where(fileNameWithPath =>
+                string appLogsPath = $@"{_logDirectory}\{app.Name}";
+                IEnumerable<string> appLogFileNames = Directory.Exists(appLogsPath) ? Directory.EnumerateFiles(appLogsPath).Where(fileNameWithPath =>
                 {
                     var fileNameNoExtension = Path.GetFileNameWithoutExtension(fileNameWithPath);
                     var fileNameSplit = fileNameNoExtension.Split('-');
@@ -57,8 +64,10 @@ namespace LogHunter
                         inTimeRange = fileDate >= start.Date && fileDate <= end.Date;
                     }
                     return inTimeRange;
-                });
-                logFileNamesByApp.Add(appName, appLogFileNames);
+                }) 
+                : [];
+                if (appLogFileNames.Any()) 
+                    logFileNamesByApp.Add(app.Name, appLogFileNames);
             }
             return logFileNamesByApp;
         }
