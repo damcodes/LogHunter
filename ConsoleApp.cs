@@ -132,7 +132,13 @@ namespace LogHunter
             string queryObjStr = "{" + Environment.NewLine;
             foreach (Arg arg in args)
                 if (arg.Value is not null)
-                    queryObjStr += $"\t{arg.Name}: {(arg.Name == "LogLevel" || arg.Name == "Apps" ? string.Join(", ", arg.Value!) : arg.Value)}{Environment.NewLine}";
+                {
+                    if (arg.Name == "Apps") 
+                        queryObjStr += $"\t{arg.Name}: {string.Join(", ", arg.Value.Name)}{Environment.NewLine}";
+                    else if (arg.Name == "LogLevel")
+                        queryObjStr += $"\t{arg.Name}: {string.Join(", ", arg.Value)}{Environment.NewLine}";
+                    else queryObjStr += $"\t{arg.Name}: {arg.Value}";
+                }
             queryObjStr += "}";
             Console.WriteLine(queryObjStr);
         }
