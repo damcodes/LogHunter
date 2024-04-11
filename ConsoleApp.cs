@@ -134,10 +134,10 @@ namespace LogHunter
                 if (arg.Value is not null)
                 {
                     if (arg.Name == "Apps") 
-                        queryObjStr += $"\t{arg.Name}: {string.Join(", ", arg.Value.Name)}{Environment.NewLine}";
+                        queryObjStr += $"\t{arg.Name}: {string.Join(", ", ((IEnumerable<App>)arg.Value).Select(app => app.Name))}{Environment.NewLine}";
                     else if (arg.Name == "LogLevel")
                         queryObjStr += $"\t{arg.Name}: {string.Join(", ", arg.Value)}{Environment.NewLine}";
-                    else queryObjStr += $"\t{arg.Name}: {arg.Value}";
+                    else queryObjStr += $"\t{arg.Name}: {arg.Value}{Environment.NewLine}";
                 }
             queryObjStr += "}";
             Console.WriteLine(queryObjStr);
