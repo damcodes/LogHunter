@@ -33,6 +33,7 @@ namespace LogHunter
                         "TransactionId" => log.Scope is not null ? log.Scope.TransactionId == param.Value : false,
                         "UserId" => log.Scope is not null ? log.Scope.UserObjectId == param.Value : false,
                         "Message" => log.Message == param.Value,
+                        "Apps" => true, //always true, as we're grouping not filtering by apps at this point
                         _ => false,
                     };
                 }));
