@@ -5,11 +5,11 @@ namespace LogHunter
     {
         private LogLevels(string val) { Value = val; }
         public string Value { get; private set; }
-        public static LogLevels Info { get { return new LogLevels("INFO"); } }
-        public static LogLevels Trace { get { return new LogLevels("TRACE"); } }
-        public static LogLevels Error { get { return new LogLevels("ERROR"); } }
-        public static LogLevels Critical { get { return new LogLevels("CRITICAL"); } }
-        public static LogLevels Warn { get { return new LogLevels("WARN"); } }
+        public static LogLevels Info { get => new("INFO"); }
+        public static LogLevels Trace { get => new("TRACE"); }
+        public static LogLevels Error { get => new("ERROR"); }
+        public static LogLevels Critical { get => new("CRITICAL"); }
+        public static LogLevels Warn { get => new("WARN"); }
         public static readonly string[] Levels = [Info.Value, Trace.Value, Error.Value, Critical.Value, Warn.Value];
         public static new string ToString() => string.Join("\n", Levels.Select((level, i) => $"{i + 1}) {level}"));
     }
