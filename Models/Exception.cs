@@ -1,7 +1,7 @@
 
 namespace LogHunter
 {
-    public class Exception
+    public class LogException
     {
         public string? Type { get; set; }
         public string? Message { get; set; }

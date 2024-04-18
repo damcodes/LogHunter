@@ -8,7 +8,7 @@ namespace LogHunter
         public required string Callsite { get; set; }
         public required string Message { get; set; }
         public Scope? Scope { get; set; }
-        public Exception? Exception { get; set; }
+        public LogException? Exception { get; set; }
         public IEnumerable<string> GetDisplayStrings() => 
             [
                 $"LogLevel: {Level}", 

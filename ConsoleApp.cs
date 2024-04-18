@@ -111,7 +111,7 @@ namespace LogHunter
                 if (_isInteractiveMode) Thread.Sleep(5000);
                 return _isInteractiveMode && ShouldContinue();
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Console.Clear();
                 PrintInColor($"{Environment.NewLine}{e.Message}{Environment.NewLine}", color: ConsoleColor.Red);

@@ -17,7 +17,7 @@ try
     }
     while (run);
 }
-catch (System.Exception e)
+catch (Exception e)
 {
     Console.WriteLine($"\n{e.Message}\n");
 }
