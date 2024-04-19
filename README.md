@@ -16,8 +16,8 @@ You must publish the executable to the machine you're running LogHunter on. Foll
    You'll  need to restart your machine after adding the environment variable.
    
 2. Clone the LogHunter repo from [azure repos](https://dev.azure.com/fcaspa/_git/LogHunter%202)
-2. Run `dotnet publish -c Release` which will build the app executable at `bin/Release/net8.0/publish/LogHunter.exe`
-3. Copy `LogHunter.exe` to some desired location on your machine
+3. Run `dotnet publish -c Release` which will build the app executable at `bin/Release/net8.0/publish/LogHunter.exe`
+4. Copy `LogHunter.exe` to some desired location on your machine
 
 ## Executing a Hunt
 
