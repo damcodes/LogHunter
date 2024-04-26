@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: 'windows-latest'
+  name: DmoTest
 
 variables:
   solution: '**/*.sln'
@@ -16,20 +16,28 @@ variables:
 
 steps:
 - task: DotNetCoreCLI@2
+  displayName: Restore Packages
   inputs:
     command: 'restore'
     projects: './LogHunter.csproj'
     feedsToUse: 'select'
 
 - task: DotNetCoreCLI@2
+  displayName: Build Project
   inputs:
     command: 'build'
     projects: './LogHunter.csproj'
 
 - task: DotNetCoreCLI@2
+  displayName: Publish .exe
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: './LogHunter.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
 
+- task: PublishPipelineArtifact@1
+  displayName: Publish Artifact
+  inputs:
+    targetPath: '$(Build.ArtifactStagingDirectory)' 
+    artifactName: 'drop'
