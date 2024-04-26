@@ -28,6 +28,12 @@ steps:
     command: 'build'
     projects: './LogHunter.csproj'
 
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: './'
+    Contents: 'appsettings.Development.json'
+    TargetFolder: '$(build.artifactstagingdirectory)'
+
 - task: DotNetCoreCLI@2
   displayName: Publish Executable
   inputs:
