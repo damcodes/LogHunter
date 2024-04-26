@@ -29,12 +29,13 @@ steps:
     projects: './LogHunter.csproj'
 
 - task: DotNetCoreCLI@2
-  displayName: Publish .exe
+  displayName: Publish Executable
   inputs:
     command: 'publish'
     publishWebProjects: false
     projects: './LogHunter.csproj'
     arguments: '--configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: false
 
 - task: PublishPipelineArtifact@1
   displayName: Publish Artifact
