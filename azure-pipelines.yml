@@ -30,9 +30,8 @@ steps:
 
 - task: CopyFiles@2
   inputs:
-    SourceFolder: './'
     Contents: 'appsettings.Development.json'
-    TargetFolder: '$(build.artifactstagingdirectory)'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
 
 - task: DotNetCoreCLI@2
   displayName: Publish Executable
